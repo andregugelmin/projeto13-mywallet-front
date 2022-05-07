@@ -33,7 +33,7 @@ function SignUpScreen() {
             navigate('/');
         });
         promise.catch((err) => {
-            alert(err.response.statusText);
+            alert(err.response.data.message);
         });
     }
 
