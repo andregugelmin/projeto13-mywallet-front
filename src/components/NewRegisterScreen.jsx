@@ -6,7 +6,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import UserContext from './contexts/UserContext';
 
 function NewRegisterScreen() {
-    const API_URL = 'http://localhost:5500/registers';
+    const API_URL = 'https://back-my-wallet-deco.herokuapp.com/registers';
 
     const { token } = useContext(UserContext);
     const { registertype } = useParams();

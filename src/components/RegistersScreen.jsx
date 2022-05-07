@@ -6,7 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import UserContext from './contexts/UserContext';
 
 function RegisterInputScreen() {
-    const API_URL = 'http://localhost:5500/registers';
+    const API_URL = 'https://back-my-wallet-deco.herokuapp.com/registers';
     const { token, setToken } = useContext(UserContext);
 
     const [username, setUsername] = useState('');
@@ -166,11 +166,15 @@ const Registers = styled.div`
         font-size: 26px;
     }
 
+    main {
+        height: 90%;
+    }
+
     .registers-box {
         background: #ffffff;
         border-radius: 5px;
         width: 100%;
-        height: 70%;
+        height: 80%;
         margin-top: 22px;
         margin-bottom: 3vh;
     }
@@ -257,6 +261,9 @@ const Registers = styled.div`
 
     .register-desc {
         color: #000000;
+        overflow: hidden;
+        white-space: nowrap;
+        max-width: 35vw;
     }
 
     .register-input {

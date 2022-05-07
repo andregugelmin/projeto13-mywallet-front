@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Login from '../layouts/Login';
 
 function SignUpScreen() {
-    const API_URL = 'http://localhost:5500/sign-up';
+    const API_URL = 'https://back-my-wallet-deco.herokuapp.com/sign-up';
 
     const [registerEmail, setEmail] = useState('');
     const [registerPassword, setPassword] = useState('');

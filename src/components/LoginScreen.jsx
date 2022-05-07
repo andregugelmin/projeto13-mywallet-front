@@ -7,7 +7,7 @@ import Login from '../layouts/Login';
 
 function LoginScreen() {
     const { setToken } = useContext(UserContext);
-    const API_URL = 'http://localhost:5500/sign-in';
+    const API_URL = 'https://back-my-wallet-deco.herokuapp.com/sign-in';
 
     const [loginEmail, setEmail] = useState('');
     const [loginPassword, setPassword] = useState('');
