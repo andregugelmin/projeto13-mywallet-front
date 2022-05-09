@@ -13,7 +13,7 @@ const Login = styled.div`
         font-size: 42px;
         line-height: 50px;
         color: #ffffff;
-        margin-top: 20vh;
+        margin-top: 15vh;
     }
 
     form {
@@ -53,7 +53,7 @@ const Login = styled.div`
         font-size: 20px;
         line-height: 23px;
         color: #ffffff;
-        margin-bottom: 15%;
+        margin-bottom: 7vh;
     }
 
     p {
@@ -61,6 +61,7 @@ const Login = styled.div`
         font-size: 15px;
         line-height: 18px;
         color: #ffffff;
+        margin-bottom: 20px;
     }
 `;
 

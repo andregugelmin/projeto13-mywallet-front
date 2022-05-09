@@ -7,37 +7,41 @@ import Login from '../layouts/Login';
 function SignUpScreen() {
     const API_URL = 'https://back-my-wallet-deco.herokuapp.com/sign-up';
 
-    const [registerEmail, setEmail] = useState('');
-    const [registerPassword, setPassword] = useState('');
+    const [transactionEmail, setEmail] = useState('');
+    const [transactionPassword, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [registerName, setName] = useState('');
+    const [transactionName, setName] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const navigate = useNavigate();
 
     function sendToApi(event) {
         event.preventDefault();
+        setIsLoading(true);
 
-        if (confirmPassword !== registerPassword) {
+        if (confirmPassword !== transactionPassword) {
             alert('Confirmação de senha esta diferente!');
+            setIsLoading(false);
             return;
         }
-        const registerData = {
-            email: registerEmail,
-            password: registerPassword,
+        const transactionData = {
+            email: transactionEmail,
+            password: transactionPassword,
             passwordConfirm: confirmPassword,
-            name: registerName,
+            name: transactionName,
         };
-        const promise = axios.post(API_URL, registerData);
+        const promise = axios.post(API_URL, transactionData);
 
         promise.then((response) => {
             navigate('/');
         });
         promise.catch((err) => {
             alert(err.response.data.message);
+            setIsLoading(false);
         });
     }
 
-    return (
+    return !isLoading ? (
         <Login>
             <h1>MyWallet</h1>
             <form onSubmit={sendToApi}>
@@ -45,7 +49,7 @@ function SignUpScreen() {
                     required
                     type="text"
                     placeholder="Nome"
-                    value={registerName}
+                    value={transactionName}
                     onChange={(e) => {
                         setName(e.target.value);
                     }}
@@ -54,7 +58,7 @@ function SignUpScreen() {
                     required
                     type="text"
                     placeholder="E-mail"
-                    value={registerEmail}
+                    value={transactionEmail}
                     onChange={(e) => {
                         setEmail(e.target.value);
                     }}
@@ -63,7 +67,8 @@ function SignUpScreen() {
                     required
                     type="password"
                     placeholder="Senha"
-                    value={registerPassword}
+                    value={transactionPassword}
+                    minlength="6"
                     onChange={(e) => {
                         setPassword(e.target.value);
                     }}
@@ -82,6 +87,10 @@ function SignUpScreen() {
             <Link style={{ textDecoration: 'none' }} to={`/`}>
                 <p>Já tem uma conta? Entre agora!</p>
             </Link>
+        </Login>
+    ) : (
+        <Login>
+            <h1>MyWallet</h1>
         </Login>
     );
 }

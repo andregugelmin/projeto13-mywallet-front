@@ -11,6 +11,8 @@ function LoginScreen() {
 
     const [loginEmail, setEmail] = useState('');
     const [loginPassword, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
+    const [isLogingIn, setIsLogingIn] = useState(true);
 
     const navigate = useNavigate();
 
@@ -19,6 +21,9 @@ function LoginScreen() {
     if (localUserObj) {
         const userObjDeserialized = JSON.parse(localUserObj);
         sendUserObjToApi(userObjDeserialized);
+    } else if (isLoading) {
+        setIsLoading(false);
+        setIsLogingIn(false);
     }
 
     function sendUserObjToApi(userObj) {
@@ -27,10 +32,12 @@ function LoginScreen() {
         promise.then((response) => {
             setToken(response.data.token);
             saveUserObjLocally(userObj);
-            navigate('/registers');
+            navigate('/transactions');
         });
         promise.catch((err) => {
-            alert(err.response.statusText);
+            alert(err.response.data.message);
+            setIsLoading(false);
+            setIsLogingIn(false);
         });
     }
 
@@ -40,6 +47,7 @@ function LoginScreen() {
             email: loginEmail,
             password: loginPassword,
         };
+        setIsLogingIn(true);
         sendUserObjToApi(loginData);
     }
 
@@ -48,7 +56,7 @@ function LoginScreen() {
         localStorage.setItem('myWalletUserData', userObjSerialized);
     }
 
-    return (
+    return !isLogingIn ? (
         <Login>
             <h1>MyWallet</h1>
             <form onSubmit={login}>
@@ -71,6 +79,10 @@ function LoginScreen() {
             <Link style={{ textDecoration: 'none' }} to={`/sign-up`}>
                 <p>Primeira vez? Cadastre-se!</p>
             </Link>
+        </Login>
+    ) : (
+        <Login>
+            <h1>MyWallet</h1>
         </Login>
     );
 }

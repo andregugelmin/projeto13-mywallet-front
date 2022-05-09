@@ -54,6 +54,7 @@ const GlobalCSSConfig = createGlobalStyle`
     body {
         width: 100vw;
         height: 100vh;
+        background: #8c25be;
     }
     body::-webkit-scrollbar {
         display: none;

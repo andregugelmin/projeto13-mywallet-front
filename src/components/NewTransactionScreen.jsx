@@ -5,14 +5,15 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import UserContext from './contexts/UserContext';
 
-function NewRegisterScreen() {
-    const API_URL = 'https://back-my-wallet-deco.herokuapp.com/registers';
+function NewTransactionScreen() {
+    const API_URL = 'https://back-my-wallet-deco.herokuapp.com/transactions';
 
     const { token } = useContext(UserContext);
-    const { registertype } = useParams();
+    const { transactionType } = useParams();
 
-    const [registerValue, setValue] = useState('');
+    const [transactionValue, setValue] = useState('');
     const [description, setDescription] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const navigate = useNavigate();
 
@@ -24,33 +25,35 @@ function NewRegisterScreen() {
 
     function sendToApi(event) {
         event.preventDefault();
+        setIsLoading(true);
         const config = {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         };
-        const registerData = {
-            value: registerValue,
+        const transactionData = {
+            value: transactionValue,
             description: description,
-            type: registertype,
+            type: transactionType,
         };
-        const promise = axios.post(API_URL, registerData, config);
+        const promise = axios.post(API_URL, transactionData, config);
 
         promise.then((response) => {
-            navigate('/registers');
+            navigate('/transactions');
         });
         promise.catch((err) => {
-            alert(err.response.statusText);
+            alert(err.response.data.message);
+            setIsLoading(false);
         });
     }
 
     function setTypeText() {
-        return registertype === 'input' ? <>entrada</> : <>saída</>;
+        return transactionType === 'input' ? <>entrada</> : <>saída</>;
     }
 
     const typeText = setTypeText();
-    return (
-        <NewRegister>
+    return !isLoading ? (
+        <NewTransaction>
             <h1>Nova {typeText}</h1>
             <form onSubmit={sendToApi}>
                 <input
@@ -59,7 +62,7 @@ function NewRegisterScreen() {
                     placeholder="Valor"
                     min="0"
                     step="0.01"
-                    value={registerValue}
+                    value={transactionValue}
                     onChange={(e) => setValue(e.target.value)}
                 />
                 <input
@@ -71,11 +74,13 @@ function NewRegisterScreen() {
                 />
                 <button type="submit">Salvar {typeText}</button>
             </form>
-        </NewRegister>
+        </NewTransaction>
+    ) : (
+        <NewTransaction></NewTransaction>
     );
 }
 
-const NewRegister = styled.div`
+const NewTransaction = styled.div`
     background: #8c25be;
     font-family: 'Raleway', sans-serif;
     height: 100vh;
@@ -134,4 +139,4 @@ const NewRegister = styled.div`
     }
 `;
 
-export default NewRegisterScreen;
+export default NewTransactionScreen;

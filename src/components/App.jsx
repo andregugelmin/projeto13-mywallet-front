@@ -5,8 +5,8 @@ import GlobalCSSConfig from './GlobalCSSConfig';
 
 import LoginScreen from './LoginScreen';
 import SignUpScreen from './SignUpScreen';
-import RegistersScreen from './RegistersScreen';
-import NewRegisterScreen from './NewRegisterScreen';
+import TransactionsScreen from './TransactionsScreen';
+import NewTransactionScreen from './NewTransactionScreen';
 
 function App() {
     const [token, setToken] = useState('');
@@ -20,12 +20,12 @@ function App() {
                         <Route path="/" element={<LoginScreen />} />
                         <Route path="/sign-up" element={<SignUpScreen />} />
                         <Route
-                            path="/registers"
-                            element={<RegistersScreen />}
+                            path="/transactions"
+                            element={<TransactionsScreen />}
                         />
                         <Route
-                            path="/new-register/:registertype"
-                            element={<NewRegisterScreen />}
+                            path="/new-transaction/:transactionType"
+                            element={<NewTransactionScreen />}
                         />
                     </Routes>
                 </BrowserRouter>

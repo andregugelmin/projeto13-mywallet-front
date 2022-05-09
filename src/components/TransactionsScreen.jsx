@@ -5,12 +5,12 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import UserContext from './contexts/UserContext';
 
-function RegisterInputScreen() {
-    const API_URL = 'https://back-my-wallet-deco.herokuapp.com/registers';
+function TransactionInputScreen() {
+    const API_URL = 'https://back-my-wallet-deco.herokuapp.com/transactions';
     const { token, setToken } = useContext(UserContext);
 
     const [username, setUsername] = useState('');
-    const [registers, setRegisters] = useState([]);
+    const [transactions, setTransactions] = useState([]);
     const [balance, setBalance] = useState(0);
 
     const navigate = useNavigate();
@@ -18,15 +18,15 @@ function RegisterInputScreen() {
         if (!token) {
             navigate('/');
         } else {
-            loadRegistersFromAPI();
+            loadTransactionsFromAPI();
         }
     }, []);
 
     useEffect(() => {
         setBalance(getUserBalance);
-    }, [registers]);
+    }, [transactions]);
 
-    function loadRegistersFromAPI() {
+    function loadTransactionsFromAPI() {
         const config = {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -38,7 +38,8 @@ function RegisterInputScreen() {
         promise.then((response) => {
             const { data } = response;
             setUsername(data.user.name);
-            setRegisters(data.userRegisters);
+            if (data.userTransaction !== undefined)
+                setTransactions(data.userTransaction);
         });
         promise.catch((err) => {
             alert(err.response.data.message);
@@ -51,27 +52,29 @@ function RegisterInputScreen() {
         localStorage.removeItem('myWalletUserData');
     }
 
-    function setRegisterBox() {
-        return registers.length === 0 ? (
-            <div className="empty-register-box">
+    function setTransactionBox() {
+        return transactions.length === 0 ? (
+            <div className="empty-transaction-box">
                 <p>Não há registros de entrada ou saída</p>
             </div>
         ) : (
-            <div className="user-registers">
-                <div className="registers">
-                    {registers.map((register) => {
+            <div className="user-transactions">
+                <div className="transactions">
+                    {transactions.map((transaction) => {
                         return (
-                            <div className="register" key={register._id}>
-                                <div className="register-info">
-                                    <p className="register-date">
-                                        {register.date.slice(0, 5)}
+                            <div className="transaction" key={transaction._id}>
+                                <div className="transaction-info">
+                                    <p className="transaction-date">
+                                        {transaction.date.slice(0, 5)}
                                     </p>
-                                    <p className="register-desc">
-                                        {register.description}
+                                    <p className="transaction-desc">
+                                        {transaction.description}
                                     </p>
                                 </div>
-                                <p className={`register-${register.type}`}>
-                                    {parseFloat(register.value).toFixed(2)}
+                                <p
+                                    className={`transaction-${transaction.type}`}
+                                >
+                                    {parseFloat(transaction.value).toFixed(2)}
                                 </p>
                             </div>
                         );
@@ -82,7 +85,9 @@ function RegisterInputScreen() {
                     <p className="balance">Saldo</p>
                     <p
                         className={
-                            balance >= 0 ? 'register-input' : 'register-output '
+                            balance >= 0
+                                ? 'transaction-input'
+                                : 'transaction-output '
                         }
                     >
                         {balance.toFixed(2)}
@@ -94,8 +99,8 @@ function RegisterInputScreen() {
 
     function getUserBalance() {
         let userBalance = 0;
-        if (registers.length > 0) {
-            registers.forEach((element) => {
+        if (transactions.length > 0) {
+            transactions.forEach((element) => {
                 if (element.type === 'input')
                     userBalance += parseFloat(element.value);
                 else userBalance -= parseFloat(element.value);
@@ -105,38 +110,38 @@ function RegisterInputScreen() {
         return userBalance;
     }
 
-    const registerBox = setRegisterBox();
+    const transactionBox = setTransactionBox();
 
     return (
-        <Registers>
+        <Transactions>
             <header>
                 <h1>Olá, {username}</h1>
                 <ion-icon name="exit-outline" onClick={quitApp}></ion-icon>
             </header>
             <main>
-                <div className="registers-box">{registerBox}</div>
+                <div className="transactions-box">{transactionBox}</div>
                 <div className="buttons-container">
                     <Link
-                        to={`/new-register/input`}
-                        className="register-button"
+                        to={`/new-transaction/input`}
+                        className="transaction-button"
                     >
                         <ion-icon name="add-circle-outline"></ion-icon>
                         <p>Nova entrada</p>
                     </Link>
                     <Link
-                        to={`/new-register/output`}
-                        className="register-button"
+                        to={`/new-transaction/output`}
+                        className="transaction-button"
                     >
                         <ion-icon name="remove-circle-outline"></ion-icon>
                         <p>Nova saída</p>
                     </Link>
                 </div>
             </main>
-        </Registers>
+        </Transactions>
     );
 }
 
-const Registers = styled.div`
+const Transactions = styled.div`
     background: #8c25be;
     font-family: 'Raleway', sans-serif;
     height: 100vh;
@@ -170,7 +175,7 @@ const Registers = styled.div`
         height: 90%;
     }
 
-    .registers-box {
+    .transactions-box {
         background: #ffffff;
         border-radius: 5px;
         width: 100%;
@@ -179,7 +184,7 @@ const Registers = styled.div`
         margin-bottom: 3vh;
     }
 
-    .empty-register-box {
+    .empty-transaction-box {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -187,7 +192,7 @@ const Registers = styled.div`
         height: 100%;
     }
 
-    .empty-register-box p {
+    .empty-transaction-box p {
         width: 180px;
         font-weight: 400;
         font-size: 18px;
@@ -204,7 +209,7 @@ const Registers = styled.div`
         max-height: 100px;
     }
 
-    .register-button {
+    .transaction-button {
         background: #a328d6;
         border-radius: 5px;
         width: 45%;
@@ -214,7 +219,7 @@ const Registers = styled.div`
         position: relative;
     }
 
-    .register-button p {
+    .transaction-button p {
         position: absolute;
         bottom: 14px;
         left: 14px;
@@ -225,7 +230,7 @@ const Registers = styled.div`
         width: 40%;
     }
 
-    .user-registers {
+    .user-transactions {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -233,7 +238,7 @@ const Registers = styled.div`
         height: 100%;
     }
 
-    .registers {
+    .transactions {
         min-height: 50vh;
         max-height: 60vh;
         width: 100%;
@@ -241,7 +246,7 @@ const Registers = styled.div`
         overflow: scroll;
     }
 
-    .register {
+    .transaction {
         display: flex;
         justify-content: space-between;
         margin-top: 15px;
@@ -249,27 +254,27 @@ const Registers = styled.div`
         line-height: 19px;
     }
 
-    .register-info {
+    .transaction-info {
         display: flex;
         justify-content: space-evenly;
     }
 
-    .register-date {
+    .transaction-date {
         color: #c6c6c6;
         margin-right: 15px;
     }
 
-    .register-desc {
+    .transaction-desc {
         color: #000000;
         overflow: hidden;
         white-space: nowrap;
         max-width: 35vw;
     }
 
-    .register-input {
+    .transaction-input {
         color: #03ac00;
     }
-    .register-output {
+    .transaction-output {
         color: #c70000;
     }
 
@@ -286,4 +291,4 @@ const Registers = styled.div`
     }
 `;
 
-export default RegisterInputScreen;
+export default TransactionInputScreen;
